@@ -153,14 +153,66 @@ class LinkedList {
       current.next = null;
     }
   }
+
+  findNthNodeFromBeginning(head: ListNode | null, n: number) {
+    let curr: ListNode | null = head;
+    for (let i = 1; i < n; i++) {
+      if (curr) {
+        curr = curr.next;
+      }
+    }
+    return curr;
+  }
+
+  lengthofList(head: ListNode | null): {
+    length: number;
+    tail: ListNode | null;
+  } {
+    let curr: ListNode | null = head;
+    let len = 1;
+    while (curr?.next) {
+      len++;
+      curr = curr.next;
+    }
+
+    return { length: len, tail: curr };
+  }
+
+  rotate(k: number): ListNode | null {
+    // code here
+    if (!this.head || !this.head.next) {
+      return this.head;
+    }
+    let obj = this.lengthofList(this.head);
+    let len = obj.length;
+    let tailNode = obj.tail;
+    let numRotations = k % len;
+
+    if (numRotations === 0) {
+      return this.head;
+    }
+
+    if (tailNode) {
+      tailNode.next = this.head;
+    }
+    let kthNodeFromBeg = this.findNthNodeFromBeginning(this.head, k);
+    if (kthNodeFromBeg) {
+      this.head = kthNodeFromBeg.next;
+      kthNodeFromBeg.next = null;
+    }
+    return this.head;
+  }
 }
 
 const list = new LinkedList();
 list.addAtEnd(1);
 list.addAtEnd(2);
-list.addAtEnd(2);
-list.addAtEnd(1);
-console.log(list);
+list.addAtEnd(3);
+list.addAtEnd(4);
+list.addAtEnd(5);
+// list.addAtEnd(2);
+// list.addAtEnd(1);
+// console.log(list);
 // list.addAtEnd(3);
 // list.addAtEnd(5);
 // list.addAtEnd(6);
@@ -172,6 +224,9 @@ console.log(list);
 // list.print();
 // console.log("--------------");
 // list.addAtPosition(4, 4);
+list.print();
+list.rotate(13);
+console.log("-----------");
 list.print();
 // 0 1 2 3 4 5 6 10
 // console.log("--------------");
@@ -199,4 +254,37 @@ function isPalindrome(head: ListNode | null): boolean {
   }
 
   return str1 === str2;
+}
+
+function findIntersection(
+  head1: ListNode | null,
+  head2: ListNode | null
+): ListNode | null {
+  // your code here
+  let c1 = head1,
+    c2 = head2;
+  let newListHead: ListNode | null = null;
+  let c3: ListNode | null = null;
+
+  while (c1 && c2) {
+    if (c1.value === c2.value) {
+      const newNode = new ListNode(c1.value);
+      if (!newListHead) {
+        newListHead = newNode;
+        c3 = newListHead;
+      } else {
+        if (c3) {
+          c3.next = newNode;
+          c3 = newNode;
+        }
+      }
+      c1 = c1.next;
+      c2 = c2.next;
+    } else if (c1.value < c2.value) {
+      c1 = c1.next;
+    } else {
+      c2 = c2.next;
+    }
+  }
+  return newListHead;
 }

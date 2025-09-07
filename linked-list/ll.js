@@ -141,14 +141,57 @@ var LinkedList = /** @class */ (function () {
             current.next = null;
         }
     };
+    LinkedList.prototype.findNthNodeFromBeginning = function (head, n) {
+        var curr = head;
+        for (var i = 1; i < n; i++) {
+            if (curr) {
+                curr = curr.next;
+            }
+        }
+        return curr;
+    };
+    LinkedList.prototype.lengthofList = function (head) {
+        var curr = head;
+        var len = 1;
+        while (curr === null || curr === void 0 ? void 0 : curr.next) {
+            len++;
+            curr = curr.next;
+        }
+        return { length: len, tail: curr };
+    };
+    LinkedList.prototype.rotate = function (k) {
+        // code here
+        if (!this.head || !this.head.next) {
+            return null;
+        }
+        var obj = this.lengthofList(this.head);
+        var len = obj.length;
+        var tailNode = obj.tail;
+        var numRotations = k % len;
+        if (numRotations === 0) {
+            return this.head;
+        }
+        if (tailNode) {
+            tailNode.next = this.head;
+        }
+        var kthNodeFromBeg = this.findNthNodeFromBeginning(this.head, k);
+        if (kthNodeFromBeg) {
+            this.head = kthNodeFromBeg.next;
+            kthNodeFromBeg.next = null;
+        }
+        return this.head;
+    };
     return LinkedList;
 }());
 var list = new LinkedList();
 list.addAtEnd(1);
 list.addAtEnd(2);
-list.addAtEnd(2);
-list.addAtEnd(1);
-console.log(list);
+list.addAtEnd(3);
+list.addAtEnd(4);
+list.addAtEnd(5);
+// list.addAtEnd(2);
+// list.addAtEnd(1);
+// console.log(list);
 // list.addAtEnd(3);
 // list.addAtEnd(5);
 // list.addAtEnd(6);
@@ -159,6 +202,9 @@ console.log(list);
 // list.print();
 // console.log("--------------");
 // list.addAtPosition(4, 4);
+list.print();
+list.rotate(13);
+console.log("-----------");
 list.print();
 // 0 1 2 3 4 5 6 10
 // console.log("--------------");
@@ -178,9 +224,39 @@ function isPalindrome(head) {
     // compare str1 and str2
     var current = head;
     while (current) {
-        str1 += current.value;
-        var tempStr = str2;
-        str2 = current.value + str2;
+        str1 = "".concat(str1).concat(current.value);
+        str2 = "".concat(current.value).concat(str2);
+        current = current.next;
     }
     return str1 === str2;
+}
+function findIntersection(head1, head2) {
+    // your code here
+    var c1 = head1, c2 = head2;
+    var newListHead = null;
+    var c3 = null;
+    while (c1 && c2) {
+        if (c1.value === c2.value) {
+            var newNode = new ListNode(c1.value);
+            if (!newListHead) {
+                newListHead = newNode;
+                c3 = newListHead;
+            }
+            else {
+                if (c3) {
+                    c3.next = newNode;
+                    c3 = newNode;
+                }
+            }
+            c1 = c1.next;
+            c2 = c2.next;
+        }
+        else if (c1.value < c2.value) {
+            c1 = c1.next;
+        }
+        else {
+            c2 = c2.next;
+        }
+    }
+    return newListHead;
 }
